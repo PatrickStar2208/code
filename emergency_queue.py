@@ -1,7 +1,7 @@
-from node import Node
+from node import node
+
 
 class EmergencyQueue:
-
     def __init__(self):
         self.front = None
 
@@ -9,8 +9,7 @@ class EmergencyQueue:
         return self.front is None
 
     def enqueue(self, patient):
-
-        new_node = Node(patient)
+        new_node = node(patient)
 
         if self.is_empty():
             self.front = new_node
@@ -22,25 +21,21 @@ class EmergencyQueue:
             return
 
         current = self.front
-
-        while (current.next and current.next.patient.severity <= patient.severity):
+        while current.next and current.next.patient.severity <= patient.severity:
             current = current.next
 
         new_node.next = current.next
         current.next = new_node
 
     def dequeue(self):
-
         if self.is_empty():
             return None
 
         patient = self.front.patient
         self.front = self.front.next
-
         return patient
 
     def call_next_patient(self):
-
         patient = self.dequeue()
 
         if patient:
@@ -51,15 +46,12 @@ class EmergencyQueue:
         return patient
 
     def display_queue(self):
-
         if self.is_empty():
             print("\nQueue Empty")
             return
 
         current = self.front
-
-        print("\n Emergency Queue ")
-
+        print("\nEmergency Queue")
         while current:
             print(current.patient)
             current = current.next

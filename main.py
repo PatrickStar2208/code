@@ -1,5 +1,5 @@
 from MedicalHistoryManagement import MedicalHistoryManagement
-from patient import patient
+from patient import Patient
 from patient_database import PatientDatabase
 
 
@@ -23,7 +23,7 @@ def main():
         print("5. Đăng ký bệnh nhân")
         print("6. Tìm bệnh nhân")
         print("7. Cập nhật bệnh nhân")
-        print("8. Xuất danh sách bệnh nhân")
+        print("8. Xuất viện bệnh nhân")
         print("9. Xuất tất cả bệnh nhân")
         print("0. Thoát")
 
@@ -34,10 +34,10 @@ def main():
             break
 
         if choice == 1:
-            name = input("Tên bệnh nhân: ").strip()
             pid = input("Mã bệnh nhân: ").strip()
-            sympton = input("Triệu chứng: ").strip()
-            history.addrecord(patient(name, pid, sympton))
+            name = input("Tên bệnh nhân: ").strip()
+            symptom = input("Triệu chứng: ").strip()
+            history.addrecord(Patient(pid=pid, name=name, symptom=symptom))
 
         elif choice == 2:
             history.deleteRecord()
@@ -52,10 +52,9 @@ def main():
         elif choice == 5:
             pid = input("Mã bệnh nhân: ").strip()
             name = input("Tên bệnh nhân: ").strip()
-            sympton = input("Triệu chứng: ").strip()
-            pat = patient(name, pid, sympton)
-            pat.pid = pid
-            database.register_patient(pat)
+            symptom = input("Triệu chứng: ").strip()
+            patient = Patient(pid=pid, name=name, symptom=symptom)
+            database.register_patient(patient)
 
         elif choice == 6:
             pid = input("Mã bệnh nhân cần tìm: ").strip()
@@ -82,5 +81,5 @@ def main():
             print("Lựa chọn không hợp lệ. Vui lòng thử lại.")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
