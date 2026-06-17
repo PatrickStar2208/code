@@ -1,13 +1,7 @@
-import time
-from datetime import datetime
-class Patient:
-    def __init__(self, pid, name , age, severity):
+class patient:
+    def __init__(self, name, ID, sympton):
         self.name = name
-        self.pid = pid
-        self.severity = severity
-        self.age = age
-        self.arrival_time = time.time()
+        self.ID = ID
+        self.sympton = sympton
     def __str__(self):
-        time_obj = datetime.fromtimestamp(self.arrival_time)
-        readable_time = time_obj.strftime('%Y-%m-%d %H:%M:%S')
-        return f"Patient {self.pid} {self.name} {self.age} {self.severity} {readable_time}"
+        return f"{self.name} - {self.ID} - sympton:{self.sympton}"
