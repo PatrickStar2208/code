@@ -1,5 +1,5 @@
 import heapq
-from patient import Patient
+from patient import patient
 from datetime import datetime
 class Emergency_queue:
     def __init__(self):
