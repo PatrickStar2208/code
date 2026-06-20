@@ -29,10 +29,8 @@ class Patient:
             severity (int): Severity level 1-4 (default 4 = highest)
         """
         self.pid = pid  # Primary identifier
-        self.ID = pid  # Alias for compatibility
         self.name = name
         self.symptom = symptom  # Standardized spelling
-        self.sympton = symptom  # Backward compatibility alias (typo in original)
         self.severity = severity
         self.registration_time = datetime.now()  # Current date/time
         self.arrival_time = self.registration_time.timestamp()  # Seconds since epoch
@@ -43,7 +41,7 @@ class Patient:
         Used when displaying patient records.
         """
         return (
-            f"{self.name} - {self.pid} - symptom:{self.symptom} "
+            f"{self.pid} - {self.name} - symptom:{self.symptom} "
             f"- severity:{self.severity} - Registered: "
             f"{self.registration_time.strftime('%d/%m/%Y %H:%M:%S')}"
         )

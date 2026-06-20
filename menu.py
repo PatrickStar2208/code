@@ -60,15 +60,16 @@ def display_menu():
     print(f"{Color.BOLD}{Color.YELLOW}📋 MAIN MENU:{Color.END}\n")
     
     menu_items = [
-        ("1", "➕ Add Medical History"),
-        ("2", "🗑️  Delete Last Medical Record"),
-        ("3", "📖 Display Medical History"),
-        ("4", "🔍 Find Patient History"),
-        ("5", "📝 Register Patient"),
-        ("6", "🔎 Find Patient"),
-        ("7", "✏️  Update Patient"),
-        ("8", "📤 Discharge Patient"),
-        ("9", "📊 Display All Patients"),
+        ("1", "📝 Register Patient"),
+        ("2", "🔎 Find Patient"),
+        ("3", "✏️  Update Patient"),
+        ("4", "📤 Discharge Patient"),
+        ("5", "📊 Display All Patients"),
+        ("6", "➕ Add Medical History"),
+        ("7", "🗑️  Delete Last Medical Record"),
+        ("8", "📖 Display Medical History"),
+        ("9", "🔍 Find Patient History"),
+        ("10", "🛠️ Update Medical History"),
         ("0", "🚪 Exit"),
     ]
     

@@ -67,6 +67,30 @@ class MedicalHistoryManagement:
         
         self.size += 1  # Increment counter
 
+    def updateRecord(self, patient_id, new_symptom):
+        """
+        Update the most recent medical record for a specific patient.
+        Traverses the list and remembers the last matching node, then updates it.
+        
+        Args:
+            patient_id (str): Patient ID to search for
+            new_symptom (str): New symptom value to set
+        Returns:
+            True if updated, False if no matching record found
+        """
+        currentPatient = self.head
+        last_match = None
+        # Find the last matching record (most recent occurrence)
+        while currentPatient is not None:
+            if currentPatient.value.pid == patient_id:
+                last_match = currentPatient
+            currentPatient = currentPatient.next
+
+        if last_match is not None:
+            last_match.value.symptom = new_symptom
+            return True
+        return False
+
     def deleteRecord(self):
         """
         Delete the most recent medical record (remove tail).
@@ -120,7 +144,7 @@ class MedicalHistoryManagement:
         # Traverse the linked list
         while currentPatient is not None:
             # Check if this record belongs to the patient
-            if currentPatient.value.pid == patient or currentPatient.value.ID == patient:
+            if currentPatient.value.pid == patient:
                 print(currentPatient.value)
                 return currentPatient.value
             currentPatient = currentPatient.next  # Move to next node
@@ -141,5 +165,5 @@ class MedicalHistoryManagement:
         while currentPatient is not None:
             print(currentPatient.value)  # Print the patient record
             currentPatient = currentPatient.next  # Move to next node
-            currentPatient = currentPatient.next
+            
 

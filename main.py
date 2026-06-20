@@ -36,53 +36,8 @@ def main():
             print(f"{Color.CYAN}{'='*60}{Color.END}\n")
             break  # Exit the infinite loop
 
-        # ========== CHOICE 1: ADD MEDICAL HISTORY ==========
-        # KEY CONCEPT: Patient must be registered in database FIRST
-        # This prevents orphaned records and ensures data consistency
-        if choice == 1:
-            print_section("➕ ADD MEDICAL HISTORY")
-            pid = safe_input("Patient ID: ")
-            if pid:
-                # STEP 1: Validate patient exists
-                found = database.search_patient(pid)
-                if found:
-                    # STEP 2: Get symptoms from user
-                    symptom = input_symptoms()
-                    if symptom:
-                        # STEP 3: Use patient's actual name from database (not re-entered by user)
-                        # This ensures consistency: one source of truth
-                        history.addrecord(Patient(pid=pid, name=found.name, symptom=symptom))
-                        print_success("Medical history added successfully!")
-                    else:
-                        print_error("Please enter symptoms!")
-                else:
-                    # Patient not registered - cannot add history
-                    print_error("Patient ID not found in database!")
-            else:
-                print_error("Please enter a patient ID!")
-
-        # ========== CHOICE 2: DELETE LAST MEDICAL RECORD ==========
-        elif choice == 2:
-            print_section("🗑️  DELETE LAST MEDICAL RECORD")
-            history.deleteRecord()  # Removes tail node from linked list
-
-        # ========== CHOICE 3: DISPLAY MEDICAL HISTORY ==========
-        elif choice == 3:
-            print_section("📖 DISPLAY MEDICAL HISTORY")
-            history.display()  # Traverses entire linked list
-
-        # ========== CHOICE 4: FIND SPECIFIC PATIENT'S HISTORY ==========
-        elif choice == 4:
-            print_section("🔍 FIND PATIENT HISTORY")
-            pid = safe_input("Patient ID to search: ")
-            if pid:
-                history.getHistory(pid)  # Linear search in linked list
-            else:
-                print_error("Please enter a patient ID!")
-
-        # ========== CHOICE 5: REGISTER NEW PATIENT ==========
-        # MUST be done before adding medical history
-        elif choice == 5:
+        # ========== CHOICE 1: REGISTER NEW PATIENT ==========
+        elif choice == 1:
             print_section("📝 REGISTER PATIENT")
             pid = safe_input("Patient ID: ")
             name = safe_input("Patient Name: ")
@@ -90,17 +45,17 @@ def main():
             severity = input_int("Severity Level (1-4): ")
             if pid and name and symptom and severity in [1, 2, 3, 4]:
                 patient = Patient(pid=pid, name=name, symptom=symptom, severity=severity)
-                database.register_patient(patient)  # Adds to dictionary
+                database.register_patient(patient)
                 print_success("Patient registered successfully!")
             else:
                 print_error("Please enter all required information!")
 
-        # ========== CHOICE 6: SEARCH FOR PATIENT ==========
-        elif choice == 6:
+        # ========== CHOICE 2: SEARCH FOR PATIENT ==========
+        elif choice == 2:
             print_section("🔎 FIND PATIENT")
             pid = safe_input("Patient ID to search: ")
             if pid:
-                found = database.search_patient(pid)  # O(1) lookup in dictionary
+                found = database.search_patient(pid)
                 if found:
                     print(found)
                 else:
@@ -108,8 +63,8 @@ def main():
             else:
                 print_error("Please enter a patient ID!")
 
-        # ========== CHOICE 7: UPDATE PATIENT ==========
-        elif choice == 7:
+        # ========== CHOICE 3: UPDATE PATIENT ==========
+        elif choice == 3:
             print_section("✏️  UPDATE PATIENT")
             pid = safe_input("Patient ID to update: ")
             new_name = safe_input("New name (leave blank to skip): ") or None
@@ -117,9 +72,8 @@ def main():
             database.update_patient(pid, new_name=new_name, new_severity=new_severity)
             print_success("Patient updated successfully!")
 
-        # ========== CHOICE 8: DISCHARGE PATIENT ==========
-        # Removes from database but medical history remains
-        elif choice == 8:
+        # ========== CHOICE 4: DISCHARGE PATIENT ==========
+        elif choice == 4:
             print_section("📤 DISCHARGE PATIENT")
             pid = safe_input("Patient ID to discharge: ")
             if pid:
@@ -128,10 +82,64 @@ def main():
             else:
                 print_error("Please enter a patient ID!")
 
-        # ========== CHOICE 9: DISPLAY ALL PATIENTS ==========
-        elif choice == 9:
+        # ========== CHOICE 5: DISPLAY ALL PATIENTS ==========
+        elif choice == 5:
             print_section("📊 DISPLAY ALL PATIENTS")
             database.display_all_patients()
+
+        # ========== CHOICE 6: ADD MEDICAL HISTORY ==========
+        elif choice == 6:
+            print_section("➕ ADD MEDICAL HISTORY")
+            pid = safe_input("Patient ID: ")
+            if pid:
+                found = database.search_patient(pid)
+                if found:
+                    symptom = input_symptoms()
+                    if symptom:
+                        history.addrecord(Patient(pid=pid, name=found.name, symptom=symptom))
+                        print_success("Medical history added successfully!")
+                    else:
+                        print_error("Please enter symptoms!")
+                else:
+                    print_error("Patient ID not found in database!")
+            else:
+                print_error("Please enter a patient ID!")
+
+        # ========== CHOICE 7: DELETE LAST MEDICAL RECORD ==========
+        elif choice == 7:
+            print_section("🗑️  DELETE LAST MEDICAL RECORD")
+            history.deleteRecord()
+
+        # ========== CHOICE 8: DISPLAY MEDICAL HISTORY ==========
+        elif choice == 8:
+            print_section("📖 DISPLAY MEDICAL HISTORY")
+            history.display()
+
+        # ========== CHOICE 9: FIND SPECIFIC PATIENT'S HISTORY ==========
+        elif choice == 9:
+            print_section("🔍 FIND PATIENT HISTORY")
+            pid = safe_input("Patient ID to search: ")
+            if pid:
+                history.getHistory(pid)
+            else:
+                print_error("Please enter a patient ID!")
+
+        # ========== CHOICE 10: UPDATE MEDICAL HISTORY ==========
+        elif choice == 10:
+            print_section("🛠️ UPDATE MEDICAL HISTORY")
+            pid = safe_input("Patient ID to update history for: ")
+            if pid:
+                new_symptom = input_symptoms("New symptoms (comma-separated): ")
+                if new_symptom:
+                    updated = history.updateRecord(pid, new_symptom)
+                    if updated:
+                        print_success("Medical history updated successfully!")
+                    else:
+                        print_error("No medical history found for this patient.")
+                else:
+                    print_error("Please enter new symptoms!")
+            else:
+                print_error("Please enter a patient ID!")
 
         # ========== INVALID CHOICE ==========
         else:
