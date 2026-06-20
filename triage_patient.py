@@ -14,7 +14,8 @@ class EmergencyQueue:
     def get_severity_name(self, severity):
         priority_levels = {
             1: "Critical",
-            2: "Urgent",
+            2: "Urgent"
+            ,
             3: "Moderate",
             4: "Normal"
         }
@@ -72,6 +73,16 @@ class EmergencyQueue:
                 return
 
         print("Patient not found")
+
+    def remove_patient(self, pid):
+        """Remove a patient from the queue by pid. Returns True if removed."""
+        for i, item in enumerate(self.queue):
+            _, _, current_pid, patient = item
+            if current_pid == pid:
+                self.queue.pop(i)
+                heapq.heapify(self.queue)
+                return True
+        return False
 
     def size(self):
         return len(self.queue)

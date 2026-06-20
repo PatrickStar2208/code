@@ -18,7 +18,7 @@ class Patient:
         registration_time (datetime): When patient was registered
         arrival_time (float): Unix timestamp of registration
     """
-    def __init__(self, pid, name, symptom="", severity=4):
+    def __init__(self, pid, name, age=0, phone="", address="", symptom="", severity=4):
         """
         Initialize a new patient.
         
@@ -28,8 +28,13 @@ class Patient:
             symptom (str): Patient's symptoms (default empty string)
             severity (int): Severity level 1-4 (default 4 = highest)
         """
-        self.pid = pid  # Primary identifier
+        # Basic patient identity and contact info
+        self.pid = pid  # Primary identifier (string)
         self.name = name
+        self.age = int(age) if age is not None and age != "" else 0
+        self.phone = phone
+        self.address = address
+        # Medical info
         self.symptom = symptom  # Standardized spelling
         self.severity = severity
         self.registration_time = datetime.now()  # Current date/time
@@ -41,9 +46,9 @@ class Patient:
         Used when displaying patient records.
         """
         return (
-            f"{self.pid} - {self.name} - symptom:{self.symptom} "
-            f"- severity:{self.severity} - Registered: "
-            f"{self.registration_time.strftime('%d/%m/%Y %H:%M:%S')}"
+            f"{self.pid} - {self.name} - age:{self.age} - phone:{self.phone} - "
+            f"address:{self.address} - symptom:{self.symptom} - severity:{self.severity} - "
+            f"Registered: {self.registration_time.strftime('%d/%m/%Y %H:%M:%S')}"
         )
 
 

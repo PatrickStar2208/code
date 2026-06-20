@@ -70,6 +70,7 @@ def display_menu():
         ("8", "📖 Display Medical History"),
         ("9", "🔍 Find Patient History"),
         ("10", "🛠️ Update Medical History"),
+        ("11", "🚑 Process Next Patient"),
         ("0", "🚪 Exit"),
     ]
     
@@ -89,6 +90,37 @@ def input_int(prompt, default=None):
         return int(user_input) if user_input else default
     except ValueError:
         return default
+
+
+def input_age(prompt="Age: "):
+    """Get a positive integer age from user. Returns None if blank or invalid."""
+    try:
+        user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+        if not user_input:
+            return None
+        age = int(user_input)
+        if age > 0:
+            return age
+    except ValueError:
+        pass
+    return None
+
+
+def input_phone(prompt="Phone: "):
+    """Get a phone string containing only digits and common phone chars."""
+    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+    if not user_input:
+        return None
+    allowed = set("0123456789+- ()")
+    if all(c in allowed for c in user_input):
+        return user_input
+    return None
+
+
+def input_address(prompt="Address: "):
+    """Get a non-empty address string; returns None if blank."""
+    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+    return user_input if user_input else None
 
 
 def safe_input(prompt):

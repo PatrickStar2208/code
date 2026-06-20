@@ -47,18 +47,19 @@ class PatientDatabase:
         # Check if patient already registered (avoid duplicates)
         if patient.pid in self.patients:
             print(f"Patient {patient.pid} already exists.")
-            return
+            return False
 
         # Add to dictionary
         self.patients[patient.pid] = patient
         print(f"Registered: {patient.pid} - {patient.name}")
+        return True
 
-    def search_patient(self, patient_id):
+    def search_patient(self, pid):
         """
         Find a patient by ID.
         
         Args:
-            patient_id (str): Patient ID to search for
+            pid (str): Patient ID to search for
             
         Returns:
             Patient object if found, None otherwise
@@ -66,14 +67,14 @@ class PatientDatabase:
         Time Complexity: O(1) average case
         """
         # Dictionary .get() returns value or None if key not found
-        return self.patients.get(patient_id)
+        return self.patients.get(pid)
 
-    def update_patient(self, patient_id, new_name=None, new_severity=None):
+    def update_patient(self, pid, new_name=None, new_age=None, new_phone=None, new_address=None, new_symptom=None, new_severity=None):
         """
         Modify patient information.
         
         Args:
-            patient_id (str): Patient to update
+            pid (str): Patient to update
             new_name (str): New name (optional, skip if None)
             new_severity (int): New severity (optional, skip if None)
             
@@ -83,26 +84,44 @@ class PatientDatabase:
         Note: Updates are performed in-place on the existing Patient object
         """
         # Find patient first
-        patient = self.patients.get(patient_id)
+        patient = self.patients.get(pid)
         if patient is None:
             print("Patient not found.")
-            return
+            return False
 
         # Update only provided fields (allows partial updates)
         if new_name:
             patient.name = new_name
 
+        if new_age is not None:
+            try:
+                age_int = int(new_age)
+                if age_int > 0:
+                    patient.age = age_int
+            except Exception:
+                pass
+
+        if new_phone is not None:
+            patient.phone = new_phone
+
+        if new_address is not None:
+            patient.address = new_address
+
+        if new_symptom is not None:
+            patient.symptom = new_symptom
+
         if new_severity is not None:
             patient.severity = new_severity
 
         print(f"Updated: {patient}")
+        return True
 
-    def discharge_patient(self, patient_id):
+    def discharge_patient(self, pid):
         """
         Remove patient from active database (discharge from hospital).
         
         Args:
-            patient_id (str): Patient to discharge
+            pid (str): Patient to discharge
             
         Returns:
             Patient object if discharged, None if not found
@@ -111,7 +130,7 @@ class PatientDatabase:
               Only the active patient record is removed from this database
         """
         # Remove from dictionary and return the removed object
-        removed = self.patients.pop(patient_id, None)
+        removed = self.patients.pop(pid, None)
         if removed is None:
             print("Patient not found.")
             return None

@@ -9,9 +9,10 @@ import os
 from MedicalHistoryManagement import MedicalHistoryManagement
 from patient import Patient
 from patient_database import PatientDatabase
+from triage_patient import EmergencyQueue
 from menu import (
     display_menu, print_success, print_error, print_section,
-    safe_input, input_int, input_symptoms, Color
+    safe_input, input_int, input_symptoms, input_age, input_phone, input_address, Color
 )
 
 
@@ -24,6 +25,7 @@ def main():
     """
     history = MedicalHistoryManagement()  # Linked list: stores ALL medical records
     database = PatientDatabase()  # Dictionary: stores ACTIVE patients only
+    queue = EmergencyQueue()  # Priority queue for emergency triage
 
     while True:  # Infinite loop until user exits
         display_menu()
@@ -41,12 +43,26 @@ def main():
             print_section("📝 REGISTER PATIENT")
             pid = safe_input("Patient ID: ")
             name = safe_input("Patient Name: ")
-            if pid and name:
-                patient = Patient(pid=pid, name=name)
-                database.register_patient(patient)
-                print_success("Patient registered successfully!")
-            else:
+            age = input_age()
+            phone = input_phone()
+            address = input_address()
+            symptom = input_symptoms()
+            severity = input_int("Severity Level (1-4): ")
+
+            if not pid or not name:
                 print_error("Please enter Patient ID and Name!")
+            elif age is None or phone is None or address is None:
+                print_error("Please provide valid age, phone, and address!")
+            elif severity not in [1, 2, 3, 4]:
+                print_error("Please enter a valid severity level 1-4")
+            else:
+                patient = Patient(pid=pid, name=name, age=age, phone=phone, address=address, symptom=symptom, severity=severity)
+                ok = database.register_patient(patient)
+                if ok:
+                    queue.add_patient(patient)
+                    print_success("Patient registered and added to triage queue successfully!")
+                else:
+                    print_error("Registration failed: duplicate patient ID.")
 
         # ========== CHOICE 2: SEARCH FOR PATIENT ==========
         elif choice == 2:
@@ -66,17 +82,33 @@ def main():
             print_section("✏️  UPDATE PATIENT")
             pid = safe_input("Patient ID to update: ")
             new_name = safe_input("New name (leave blank to skip): ") or None
+            new_age = input_age("New age (leave blank to skip): ")
+            new_phone = input_phone("New phone (leave blank to skip): ")
+            new_address = input_address("New address (leave blank to skip): ")
+            new_symptom = input_symptoms("New symptoms (leave blank to skip): ") or None
             new_severity = input_int("New severity level 1-4 (leave blank to skip): ")
-            database.update_patient(pid, new_name=new_name, new_severity=new_severity)
-            print_success("Patient updated successfully!")
+
+            updated = database.update_patient(pid, new_name=new_name, new_age=new_age, new_phone=new_phone, new_address=new_address, new_symptom=new_symptom, new_severity=new_severity)
+            if updated:
+                # If severity changed, reflect in queue as well
+                if new_severity is not None:
+                    queue.update_patient_severity(pid, new_severity)
+                print_success("Patient updated successfully!")
+            else:
+                print_error("Patient not found.")
 
         # ========== CHOICE 4: DISCHARGE PATIENT ==========
         elif choice == 4:
             print_section("📤 DISCHARGE PATIENT")
             pid = safe_input("Patient ID to discharge: ")
             if pid:
-                database.discharge_patient(pid)
-                print_success("Patient discharged successfully!")
+                removed = database.discharge_patient(pid)
+                if removed:
+                    # Also remove from triage queue if present
+                    queue.remove_patient(pid)
+                    print_success("Patient discharged successfully!")
+                else:
+                    print_error("Patient not found.")
             else:
                 print_error("Please enter a patient ID!")
 
@@ -95,7 +127,8 @@ def main():
                     symptom = input_symptoms()
                     severity = input_int("Severity Level (1-4): ")
                     if symptom and severity in [1, 2, 3, 4]:
-                        history.addrecord(Patient(pid=pid, name=found.name, symptom=symptom, severity=severity))
+                        # Keep contact info in the medical history record for clarity
+                        history.addrecord(Patient(pid=pid, name=found.name, age=found.age, phone=found.phone, address=found.address, symptom=symptom, severity=severity))
                         print_success("Medical history added successfully!")
                     else:
                         print_error("Please enter symptoms and valid severity level!")
@@ -139,6 +172,16 @@ def main():
                     print_error("Please enter new symptoms!")
             else:
                 print_error("Please enter a patient ID!")
+
+        # ========== CHOICE 11: PROCESS NEXT PATIENT (CALL ONLY) ==========
+        elif choice == 11:
+            print_section("🚑 PROCESS NEXT PATIENT")
+            # call_next_patient pops the highest-priority patient from the queue
+            patient = queue.call_next_patient()
+            if patient:
+                print_success(f"Called patient {patient.pid} - {patient.name}. Patient remains in active database until discharged separately.")
+            else:
+                print_error("No patients in queue.")
 
         # ========== INVALID CHOICE ==========
         else:
