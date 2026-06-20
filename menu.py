@@ -94,3 +94,13 @@ def safe_input(prompt):
     """Get text input with formatting"""
     user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
     return user_input
+
+
+def input_symptoms(prompt="Symptoms (comma-separated): "):
+    """Get multiple symptoms as comma-separated input and clean them"""
+    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+    if not user_input:
+        return ""
+    # Split by comma, strip whitespace from each symptom, and rejoin
+    symptoms = [s.strip() for s in user_input.split(",") if s.strip()]
+    return ", ".join(symptoms)

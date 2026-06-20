@@ -4,7 +4,7 @@ from patient import Patient
 from patient_database import PatientDatabase
 from menu import (
     display_menu, print_success, print_error, print_section,
-    safe_input, input_int, Color
+    safe_input, input_int, input_symptoms, Color
 )
 
 
@@ -26,7 +26,7 @@ def main():
             print_section("➕ ADD MEDICAL HISTORY")
             pid = safe_input("Patient ID: ")
             name = safe_input("Patient Name: ")
-            symptom = safe_input("Symptoms: ")
+            symptom = input_symptoms()
             if pid and name and symptom:
                 history.addrecord(Patient(pid=pid, name=name, symptom=symptom))
                 print_success("Medical history added successfully!")
@@ -53,7 +53,7 @@ def main():
             print_section("📝 REGISTER PATIENT")
             pid = safe_input("Patient ID: ")
             name = safe_input("Patient Name: ")
-            symptom = safe_input("Symptoms: ")
+            symptom = input_symptoms()
             severity = input_int("Severity Level (1-4): ")
             if pid and name and symptom and severity in [1, 2, 3, 4]:
                 patient = Patient(pid=pid, name=name, symptom=symptom, severity=severity)
