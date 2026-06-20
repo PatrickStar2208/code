@@ -41,14 +41,12 @@ def main():
             print_section("📝 REGISTER PATIENT")
             pid = safe_input("Patient ID: ")
             name = safe_input("Patient Name: ")
-            symptom = input_symptoms()
-            severity = input_int("Severity Level (1-4): ")
-            if pid and name and symptom and severity in [1, 2, 3, 4]:
-                patient = Patient(pid=pid, name=name, symptom=symptom, severity=severity)
+            if pid and name:
+                patient = Patient(pid=pid, name=name)
                 database.register_patient(patient)
                 print_success("Patient registered successfully!")
             else:
-                print_error("Please enter all required information!")
+                print_error("Please enter Patient ID and Name!")
 
         # ========== CHOICE 2: SEARCH FOR PATIENT ==========
         elif choice == 2:
@@ -95,11 +93,12 @@ def main():
                 found = database.search_patient(pid)
                 if found:
                     symptom = input_symptoms()
-                    if symptom:
-                        history.addrecord(Patient(pid=pid, name=found.name, symptom=symptom))
+                    severity = input_int("Severity Level (1-4): ")
+                    if symptom and severity in [1, 2, 3, 4]:
+                        history.addrecord(Patient(pid=pid, name=found.name, symptom=symptom, severity=severity))
                         print_success("Medical history added successfully!")
                     else:
-                        print_error("Please enter symptoms!")
+                        print_error("Please enter symptoms and valid severity level!")
                 else:
                     print_error("Patient ID not found in database!")
             else:
