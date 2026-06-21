@@ -44,14 +44,10 @@ class PatientDatabase:
         Raises:
             Prints error if patient ID already exists
         """
-        # Check if patient already registered (avoid duplicates)
         if patient.pid in self.patients:
-            print(f"Patient {patient.pid} already exists.")
             return False
 
-        # Add to dictionary
         self.patients[patient.pid] = patient
-        print(f"Registered: {patient.pid} - {patient.name}")
         return True
 
     def search_patient(self, pid):
@@ -86,10 +82,8 @@ class PatientDatabase:
         # Find patient first
         patient = self.patients.get(pid)
         if patient is None:
-            print("Patient not found.")
             return False
 
-        # Update only provided fields (allows partial updates)
         if new_name:
             patient.name = new_name
 
@@ -130,13 +124,7 @@ class PatientDatabase:
               Only the active patient record is removed from this database
         """
         # Remove from dictionary and return the removed object
-        removed = self.patients.pop(pid, None)
-        if removed is None:
-            print("Patient not found.")
-            return None
-
-        print(f"Discharged: {removed}")
-        return removed
+        return self.patients.pop(pid, None)
 
     def display_all_patients(self):
         """
