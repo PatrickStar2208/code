@@ -121,21 +121,36 @@ def main():
         elif choice == 6:
             print_section("➕ ADD MEDICAL HISTORY")
             pid = safe_input("Patient ID: ")
-            if pid:
-                found = database.search_patient(pid)
-                if found:
-                    symptom = input_symptoms()
-                    severity = input_int("Severity Level (1-4): ")
-                    if symptom and severity in [1, 2, 3, 4]:
-                        # Keep contact info in the medical history record for clarity
-                        history.addrecord(Patient(pid=pid, name=found.name, age=found.age, phone=found.phone, address=found.address, symptom=symptom, severity=severity))
-                        print_success("Medical history added successfully!")
-                    else:
-                        print_error("Please enter symptoms and valid severity level!")
-                else:
-                    print_error("Patient ID not found in database!")
-            else:
+            if not pid:
                 print_error("Please enter a patient ID!")
+                continue
+
+            patient = database.search_patient(pid)
+            if not patient:
+                print_error("Patient not found. Please register the patient first.")
+                continue
+
+            if history.has_history(pid):
+                print_error("Patient already has a medical history record. Please update the existing record instead.")
+                continue
+
+            symptom = input_symptoms("Symptoms (comma-separated): ")
+            if not symptom:
+                print_error("Please enter symptoms!")
+                continue
+
+            new_record = Patient(
+                pid=pid,
+                name=patient.name,
+                age=patient.age,
+                phone=patient.phone,
+                address=patient.address,
+                symptom=symptom,
+                severity=patient.severity,
+            )
+            history.addrecord(new_record)
+            print_success("Medical history record added successfully!")
+
 
         # ========== CHOICE 7: DELETE LAST MEDICAL RECORD ==========
         elif choice == 7:

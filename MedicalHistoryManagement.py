@@ -150,8 +150,16 @@ class MedicalHistoryManagement:
             currentPatient = currentPatient.next  # Move to next node
         
         # Not found
-        print("Không tìm thấy lịch sử cho bệnh nhân này.")  # Vietnamese message
+        print("Patient not found.")
         return None
+
+    def has_history(self, pid):
+        currentPatient = self.head
+        while currentPatient is not None:
+            if currentPatient.value.pid == pid:
+                return True
+            currentPatient = currentPatient.next
+        return False
 
     def display(self):
         """
