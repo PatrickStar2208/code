@@ -162,7 +162,7 @@ def main():
                 symptom=symptom,
                 severity=patient.severity,
             )
-            history.add_record(new_record)
+            history.add_record(new_record, symptom)
             print_success("Medical history record added successfully!")
 
 

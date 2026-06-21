@@ -1,1 +1,2 @@
-pid | name | age | phone | address | symptom | severity
+pid | symptom | timestamp
+1 - me - age:15 - phone:1231231 - address:home - symptom:ho - severity:4 - Registered: 21/06/2026 17:15:35 | ho | 21/06/2026 17:15:35

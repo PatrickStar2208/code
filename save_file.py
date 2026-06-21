@@ -15,6 +15,14 @@ def save_patient_list(patients, filename="patients.txt"):
             )
             file.write(line)
 
+def save_medical_history_list(records, filename="medical_history.txt"):
+    """Save a list of MedicalRecord objects to a text file."""
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write("pid | symptom | timestamp\n")
+        for history in records:
+            line = (
+                f"{history.pid} | {history.symptom} | {history.timestamp.strftime('%d/%m/%Y %H:%M:%S')}\n")
+            file.write(line)
 
 if __name__ == "__main__":
     print("Import save_patient_list() to save patient records to a text file.")
