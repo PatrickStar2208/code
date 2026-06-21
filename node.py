@@ -4,7 +4,7 @@ Each node stores a value and points to the next and previous nodes.
 """
 
 
-class node:
+class Node:
     def __init__(self, value):
         self.value = value
         self.next = None
