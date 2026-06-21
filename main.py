@@ -197,6 +197,19 @@ def main():
                 print_success(f"Called patient {patient.pid} - {patient.name}. Patient remains in active database until discharged separately.")
             else:
                 print_error("No patients in queue.")
+        
+        elif choice == 12:
+            print_section("💾 SAVE PATIENTS TO FILE")
+            filename = safe_input("Enter filename to save (default: patients.txt): ") or "patients.txt"
+            database.save_to_file(filename)
+            print_success(f"Patient records saved to {filename} successfully!")
+        
+        elif choice == 13:
+            print_section("💾 SAVE MEDICAL HISTORY TO FILE")
+            filename = safe_input("Enter filename to save (default: medical_history.txt): ") or "medical_history.txt"
+            history.save_to_file(filename)
+            print_success(f"Medical history records saved to {filename} successfully!")
+        
 
         # ========== INVALID CHOICE ==========
         else:
