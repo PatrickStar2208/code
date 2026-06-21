@@ -5,7 +5,7 @@ Each medical history record stores a patient ID and symptoms.
 
 from datetime import datetime
 from node import Node
-
+from save_file import save_patient_list  # Import the save function to save medical history records to a file
 
 class MedicalRecord:
     def __init__(self, pid, symptom):
@@ -105,4 +105,12 @@ class MedicalHistoryManagement:
         print(f"Medical history for patient {pid}:")
         for record in records:
             print(record)
+            
+    def save(self, filename="medical_history.txt"):
+        records = []
+        current = self.head
+        while current is not None:
+            records.append(current.value)
+            current = current.next
+        save_patient_list(records, filename)
 

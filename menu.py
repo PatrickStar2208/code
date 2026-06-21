@@ -71,6 +71,8 @@ def display_menu():
         ("9", "🔍 Find Patient History"),
         ("10", "🛠️ Update Medical History"),
         ("11", "🚑 Process Next Patient"),
+        ("12", "💾 Save Patients to File"),
+        ("13", "💾 Save Medical History to File"),
         ("0", "🚪 Exit"),
     ]
     
@@ -89,7 +91,11 @@ def input_int(prompt, default=None):
         user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
         return int(user_input) if user_input else default
     except ValueError:
+        print_error("Please enter a valid integer!")
         return default
+    except EOFError:
+        print_error("Input ended unexpectedly. Returning to menu.")
+        return -1  # Return invalid choice to trigger error handling
 
 
 def input_age(prompt="Age: "):
@@ -99,41 +105,88 @@ def input_age(prompt="Age: "):
         if not user_input:
             return None
         age = int(user_input)
+        if age < 0:
+            print_error("Age cannot be negative!")
+            return None
+        if age > 150:
+            print_error("Age seems unrealistic (max 150)!")
+            return None
         if age > 0:
             return age
+        else:
+            print_error("Age must be greater than 0!")
+            return None
     except ValueError:
-        pass
-    return None
+        print_error("Please enter a valid age (integer)!")
+        return None
+    except EOFError:
+        print_error("Input ended unexpectedly. Age not set.")
+        return None
 
 
 def input_phone(prompt="Phone: "):
     """Get a phone string containing only digits and common phone chars."""
-    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
-    if not user_input:
+    try:
+        user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+        if not user_input:
+            return None
+        if len(user_input) > 20:
+            print_error("Phone number is too long (max 20 characters)!")
+            return None
+        if len(user_input) < 7:
+            print_error("Phone number is too short (min 7 characters)!")
+            return None
+        allowed = set("0123456789+- ()")
+        if all(c in allowed for c in user_input):
+            return user_input
+        else:
+            print_error("Phone contains invalid characters! Use only: 0-9, +, -, space, ( )")
+            return None
+    except EOFError:
+        print_error("Input ended unexpectedly. Phone not set.")
         return None
-    allowed = set("0123456789+- ()")
-    if all(c in allowed for c in user_input):
-        return user_input
-    return None
 
 
 def input_address(prompt="Address: "):
     """Get a non-empty address string; returns None if blank."""
-    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
-    return user_input if user_input else None
+    try:
+        user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+        if not user_input:
+            return None
+        if len(user_input) > 100:
+            print_error("Address is too long (max 100 characters)!")
+            return None
+        if len(user_input) < 3:
+            print_error("Address is too short (min 3 characters)!")
+            return None
+        return user_input
+    except EOFError:
+        print_error("Input ended unexpectedly. Address not set.")
+        return None
 
 
 def safe_input(prompt):
     """Get text input with formatting"""
-    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
-    return user_input
+    try:
+        user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+        return user_input
+    except EOFError:
+        print_error("Input ended unexpectedly. Empty string returned.")
+        return ""
 
 
 def input_symptoms(prompt="Symptoms (comma-separated): "):
     """Get multiple symptoms as comma-separated input and clean them"""
-    user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
-    if not user_input:
+    try:
+        user_input = input(f"  {Color.BOLD}{Color.YELLOW}→{Color.END} {prompt}").strip()
+        if not user_input:
+            return ""
+        if len(user_input) > 200:
+            print_error("Symptoms text is too long (max 200 characters)!")
+            return ""
+        # Split by comma, strip whitespace from each symptom, and rejoin
+        symptoms = [s.strip() for s in user_input.split(",") if s.strip()]
+        return ", ".join(symptoms)
+    except EOFError:
+        print_error("Input ended unexpectedly. No symptoms entered.")
         return ""
-    # Split by comma, strip whitespace from each symptom, and rejoin
-    symptoms = [s.strip() for s in user_input.split(",") if s.strip()]
-    return ", ".join(symptoms)

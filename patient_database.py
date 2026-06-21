@@ -10,7 +10,7 @@ Data Structure: Dictionary
 Note: This stores only ACTIVE patients currently in the hospital.
 Medical history is stored separately in MedicalHistoryManagement (linked list).
 """
-
+from save_file import save_patient_list  # Import the save function to save patient records to a file
 
 class PatientDatabase:
     """
@@ -140,3 +140,8 @@ class PatientDatabase:
         # .values() returns all Patient objects
         for patient in self.patients.values():
             print(patient)
+    def save(self, filename="patients.txt"):
+        """Save the current list of patients to a text file."""
+        # Convert dictionary values to a list of Patient objects
+        patient_list = list(self.patients.values())
+        save_patient_list(patient_list, filename)
