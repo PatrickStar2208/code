@@ -49,11 +49,6 @@ class EmergencyQueue:
                 f"Severity {severity_text}, Arrival {readable_time}"
             )
 
-    def peek(self):
-        if self.is_empty():
-            return None
-        return self.queue[0][3]
-
     def update_patient_severity(self, pid, new_severity):
         if new_severity not in self.SEVERITY_NAMES:
             return False
@@ -76,6 +71,3 @@ class EmergencyQueue:
                 heapq.heapify(self.queue)
                 return True
         return False
-
-    def size(self):
-        return len(self.queue)
