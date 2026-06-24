@@ -14,7 +14,7 @@ class MedicalRecord:
         self.timestamp = datetime.now()
 
     def __str__(self):
-        return f"{self.medpid} - {self.symptom} - {self.timestamp.strftime('%d/%m/%Y %H:%M:%S')}"
+        return f"{self.medpid} | {self.symptom} | {self.timestamp.strftime('%d/%m/%Y %H:%M:%S')}"
 
 
 class MedicalHistoryManagement:

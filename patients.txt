@@ -1,2 +1,2 @@
 pid | name | age | phone | address | symptom | severity
-1 | me | 15 | 098423242 | home | ho | 4
+me | me | 15 | 019238901 | home | ho | 4

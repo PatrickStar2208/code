@@ -21,7 +21,7 @@ def save_medical_history_list(records, filename="medical_history.txt"):
         file.write("pid | symptom | timestamp\n")
         for history in records:
             line = (
-                f"{history.pid} | {history.symptom} | {history.timestamp.strftime('%d/%m/%Y %H:%M:%S')}\n")
+                f"{history.medpid}")
             file.write(line)
 
 if __name__ == "__main__":

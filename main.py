@@ -6,7 +6,8 @@ Entry point for the hospital system. Manages all user interactions and coordinat
 - Menu UI (formatting and user input)
 """
 import os
-from MedicalHistoryManagement import MedicalHistoryManagement
+from datetime import datetime
+from MedicalHistoryManagement import MedicalHistoryManagement,MedicalRecord
 from patient import Patient
 from patient_database import PatientDatabase
 from triage_patient import EmergencyQueue
@@ -24,6 +25,7 @@ def main():
     - history: Linked list for ALL medical records (from all patients)
     - database: Dictionary for ACTIVE registered patients
     """
+    
     history = MedicalHistoryManagement()  # Linked list: stores ALL medical records
     database = PatientDatabase()  # Dictionary: stores ACTIVE patients only
     queue = EmergencyQueue()  # Priority queue for emergency triage
@@ -154,7 +156,7 @@ def main():
                 continue
 
             # only add symptoms, severity, and timestamps in medical history; other patient info is already in the database
-            new_record = Patient(pid=medpid, name=patient.name, symptom=symptom, severity=patient.severity)
+            new_record = MedicalRecord(medpid=medpid, symptom=symptom)  
             history.add_record(new_record, symptom)
             print_success("Medical history record added successfully!")
 
