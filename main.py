@@ -134,17 +134,17 @@ def main():
         # ========== CHOICE 6: ADD MEDICAL HISTORY ==========
         elif choice == 6:
             print_section("➕ ADD MEDICAL HISTORY")
-            pid = safe_input("Patient ID: ")
-            if not pid:
+            medpid = safe_input("Patient ID: ")
+            if not medpid:
                 print_error("Please enter a patient ID!")
                 continue
 
-            patient = database.search_patient(pid)
+            patient = database.search_patient(medpid)
             if not patient:
                 print_error("Patient not found. Please register the patient first.")
                 continue
 
-            if history.find_records(pid):
+            if history.find_records(medpid):
                 print_error("Patient already has a medical history record. Please update the existing record instead.")
                 continue
 
@@ -153,46 +153,46 @@ def main():
                 print_error("Please enter symptoms!")
                 continue
 
-            new_record = Patient(
-                pid=pid,
-                name=patient.name,
-                age=patient.age,
-                phone=patient.phone,
-                address=patient.address,
-                symptom=symptom,
-                severity=patient.severity,
-            )
+            # only add symptoms, severity, and timestamps in medical history; other patient info is already in the database
+            new_record = Patient(pid=medpid, name=patient.name, symptom=symptom, severity=patient.severity)
             history.add_record(new_record, symptom)
             print_success("Medical history record added successfully!")
 
 
         # ========== CHOICE 7: DELETE LAST MEDICAL RECORD ==========
         elif choice == 7:
-            print_section("🗑️  DELETE LAST MEDICAL RECORD")
-            history.delete_last_record()
+            print_section("🗑️ DELETE RECORD")
+            pid = safe_input("Patient ID of record to delete: ")
+            if pid:
+                history.delete_record_by_pid(pid)
+            else:
+                print_error("Please enter a patient ID!")
 
         # ========== CHOICE 8: DISPLAY MEDICAL HISTORY ==========
         elif choice == 8:
             print_section("📖 DISPLAY MEDICAL HISTORY")
-            history.display()
+            if history.is_empty():
+                print_error("No medical history records found.")
+            else:
+                history.display_history()
 
         # ========== CHOICE 9: FIND SPECIFIC PATIENT'S HISTORY ==========
         elif choice == 9:
             print_section("🔍 FIND PATIENT HISTORY")
-            pid = safe_input("Patient ID to search: ")
-            if pid:
-                history.getHistory(pid)
+            medpid = safe_input("Patient ID to search: ")
+            if medpid:
+                history.find_records(medpid)
             else:
                 print_error("Please enter a patient ID!")
 
         # ========== CHOICE 10: UPDATE MEDICAL HISTORY ==========
         elif choice == 10:
             print_section("🛠️ UPDATE MEDICAL HISTORY")
-            pid = safe_input("Patient ID to update history for: ")
-            if pid:
+            medpid = safe_input("Patient ID to update history for: ")
+            if medpid:
                 new_symptom = input_symptoms("New symptoms (comma-separated): ")
                 if new_symptom:
-                    updated = history.updateRecord(pid, new_symptom)
+                    updated = history.updateRecord(medpid, new_symptom)
                     if updated:
                         print_success("Medical history updated successfully!")
                     else:
