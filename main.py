@@ -60,14 +60,19 @@ def main():
             # Validate all inputs
             if not pid or not name:
                 print_error("Please enter Patient ID and Name!")
+                break
             elif age is None:
                 print_error("Please provide a valid age!")
+                break
             elif phone is None:
                 print_error("Please provide a valid phone number!")
+                break
             elif address is None:
                 print_error("Please provide a valid address!")
+                break
             elif severity is None or severity not in [1, 2, 3, 4]:
                 print_error("Please enter a valid severity level (1-4)!")
+                break
             else:
                 patient = Patient(pid=pid, name=name, age=age, phone=phone, address=address, symptom=symptom, severity=severity)
                 ok = database.register_patient(patient)
@@ -139,21 +144,21 @@ def main():
             medpid = safe_input("Patient ID: ")
             if not medpid:
                 print_error("Please enter a patient ID!")
-                continue
+                break
 
             patient = database.search_patient(medpid)
             if not patient:
                 print_error("Patient not found. Please register the patient first.")
-                continue
+                break
 
             if history.find_records(medpid):
                 print_error("Patient already has a medical history record. Please update the existing record instead.")
-                continue
+                break
 
             symptom = input_symptoms("Symptoms (comma-separated): ")
             if not symptom:
                 print_error("Please enter symptoms!")
-                continue
+                break
 
             # only add symptoms, severity, and timestamps in medical history; other patient info is already in the database
             new_record = MedicalRecord(medpid=medpid, symptom=symptom)  
@@ -215,12 +220,16 @@ def main():
                 print_error("No patients in queue.")
         
         elif choice == 12:
+            print_section("📥 DISPLAY QUEUE")
+            queue.display_queue()
+
+        elif choice == 13:
             print_section("💾 SAVE PATIENTS TO FILE")
             filename = safe_input("Enter filename to save (default: patients.txt): ") or "patients.txt"
             database.save(filename)
             print_success(f"Patient records saved to {filename} successfully!")
         
-        elif choice == 13:
+        elif choice == 14:
             print_section("💾 SAVE MEDICAL HISTORY TO FILE")
             filename = safe_input("Enter filename to save (default: medical_history.txt): ") or "medical_history.txt"
             history.save(filename)

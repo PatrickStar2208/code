@@ -71,8 +71,9 @@ def display_menu():
         ("9", "🔍 Find Patient History"),
         ("10", "🛠️ Update Medical History"),
         ("11", "🚑 Process Next Patient"),
-        ("12", "💾 Save Patients to File"),
-        ("13", "💾 Save Medical History to File"),
+        ("12", "📥 Display Queue"),
+        ("13", "💾 Save Patients to File"),
+        ("14", "💾 Save Medical History to File"),
         ("0", "🚪 Exit"),
     ]
     
