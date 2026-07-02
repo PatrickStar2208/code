@@ -5,13 +5,11 @@ Entry point for the hospital system. Manages all user interactions and coordinat
 - Medical History (all medical records as linked list)
 - Menu UI (formatting and user input)
 """
-import os
-from datetime import datetime
-from MedicalHistoryManagement import MedicalHistoryManagement,MedicalRecord
+from MedicalHistoryManagement import MedicalHistoryManagement, MedicalRecord
 from patient import Patient
 from patient_database import PatientDatabase
 from triage_patient import EmergencyQueue
-from save_file import save_patient_list
+from save_file import load_patient_list, load_medical_history_list
 from menu import (
     display_menu, print_success, print_error, print_section,
     safe_input, input_int, input_symptoms, input_age, input_phone, input_address, Color
@@ -25,10 +23,24 @@ def main():
     - history: Linked list for ALL medical records (from all patients)
     - database: Dictionary for ACTIVE registered patients
     """
-    
+
     history = MedicalHistoryManagement()  # Linked list: stores ALL medical records
     database = PatientDatabase()  # Dictionary: stores ACTIVE patients only
     queue = EmergencyQueue()  # Priority queue for emergency triage
+
+    # Load saved data from text files when the program starts
+    try:
+        for patient in load_patient_list("patients.txt"):
+            database.register_patient(patient)
+            queue.add_patient(patient)
+    except FileNotFoundError:
+        pass
+
+    try:
+        for record in load_medical_history_list("medical_history.txt"):
+            history.add_record(record.medpid, record.symptom)
+    except FileNotFoundError:
+        pass
 
     while True:  # Infinite loop until user exits
         display_menu()
@@ -41,10 +53,10 @@ def main():
 
         # ========== CHOICE 0: EXIT ==========
         if choice == 0:
-                print_section("Thank You & Goodbye!")
-                print(f"  {Color.GREEN}Thanks for using Hospital Management System!{Color.END}\n")
-                print(f"{Color.CYAN}{'='*60}{Color.END}\n")
-                break  # Exit the infinite loop
+            print_section("Thank You & Goodbye!")
+            print(f"  {Color.GREEN}Thanks for using Hospital Management System!{Color.END}\n")
+            print(f"{Color.CYAN}{'='*60}{Color.END}\n")
+            break
 
         # ========== CHOICE 1: REGISTER NEW PATIENT ==========
         elif choice == 1:
@@ -57,22 +69,21 @@ def main():
             symptom = input_symptoms()
             severity = input_int("Severity Level (1-4): ")
 
-            # Validate all inputs
             if not pid or not name:
                 print_error("Please enter Patient ID and Name!")
-                break
+                continue
             elif age is None:
                 print_error("Please provide a valid age!")
-                break
+                continue
             elif phone is None:
                 print_error("Please provide a valid phone number!")
-                break
+                continue
             elif address is None:
                 print_error("Please provide a valid address!")
-                break
+                continue
             elif severity is None or severity not in [1, 2, 3, 4]:
                 print_error("Please enter a valid severity level (1-4)!")
-                break
+                continue
             else:
                 patient = Patient(pid=pid, name=name, age=age, phone=phone, address=address, symptom=symptom, severity=severity)
                 ok = database.register_patient(patient)
@@ -111,7 +122,6 @@ def main():
 
                 updated = database.update_patient(pid, new_name=new_name, new_age=new_age, new_phone=new_phone, new_address=new_address, new_symptom=new_symptom, new_severity=new_severity)
                 if updated:
-                    # If severity changed, reflect in queue as well
                     if new_severity is not None:
                         queue.update_patient_severity(pid, new_severity)
                     print_success("Patient updated successfully!")
@@ -125,7 +135,6 @@ def main():
             if pid:
                 removed = database.discharge_patient(pid)
                 if removed:
-                    # Also remove from triage queue if present
                     queue.remove_patient(pid)
                     print_success("Patient discharged successfully!")
                 else:
@@ -144,27 +153,24 @@ def main():
             medpid = safe_input("Patient ID: ")
             if not medpid:
                 print_error("Please enter a patient ID!")
-                break
+                continue
 
             patient = database.search_patient(medpid)
             if not patient:
                 print_error("Patient not found. Please register the patient first.")
-                break
+                continue
 
             if history.find_records(medpid):
                 print_error("Patient already has a medical history record. Please update the existing record instead.")
-                break
+                continue
 
             symptom = input_symptoms("Symptoms (comma-separated): ")
             if not symptom:
                 print_error("Please enter symptoms!")
-                break
+                continue
 
-            # only add symptoms, severity, and timestamps in medical history; other patient info is already in the database
-            new_record = MedicalRecord(medpid=medpid, symptom=symptom)  
-            history.add_record(new_record, symptom)
+            history.add_record(medpid, symptom)
             print_success("Medical history record added successfully!")
-
 
         # ========== CHOICE 7: DELETE LAST MEDICAL RECORD ==========
         elif choice == 7:
@@ -199,7 +205,7 @@ def main():
             if medpid:
                 new_symptom = input_symptoms("New symptoms (comma-separated): ")
                 if new_symptom:
-                    updated = history.updateRecord(medpid, new_symptom)
+                    updated = history.update_record(medpid, new_symptom)
                     if updated:
                         print_success("Medical history updated successfully!")
                     else:
@@ -212,13 +218,12 @@ def main():
         # ========== CHOICE 11: PROCESS NEXT PATIENT (CALL ONLY) ==========
         elif choice == 11:
             print_section("🚑 PROCESS NEXT PATIENT")
-            # call_next_patient pops the highest-priority patient from the queue
             patient = queue.call_next_patient()
             if patient:
                 print_success(f"Called patient {patient.pid} - {patient.name}. Patient remains in active database until discharged separately.")
             else:
                 print_error("No patients in queue.")
-        
+
         elif choice == 12:
             print_section("📥 DISPLAY QUEUE")
             queue.display_queue()
@@ -228,19 +233,16 @@ def main():
             filename = safe_input("Enter filename to save (default: patients.txt): ") or "patients.txt"
             database.save(filename)
             print_success(f"Patient records saved to {filename} successfully!")
-        
+
         elif choice == 14:
             print_section("💾 SAVE MEDICAL HISTORY TO FILE")
             filename = safe_input("Enter filename to save (default: medical_history.txt): ") or "medical_history.txt"
             history.save(filename)
             print_success(f"Medical history records saved to {filename} successfully!")
-        
 
-        # ========== INVALID CHOICE ==========
         else:
             print_error("Invalid option. Please try again.")
 
 
 if __name__ == "__main__":
     main()
-

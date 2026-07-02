@@ -140,6 +140,7 @@ class PatientDatabase:
         # .values() returns all Patient objects
         for patient in self.patients.values():
             print(patient)
+
     def save(self, filename="patients.txt"):
         """Save the current list of patients to a text file."""
         # Convert dictionary values to a list of Patient objects

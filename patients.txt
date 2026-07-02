@@ -1,2 +1,4 @@
 pid | name | age | phone | address | symptom | severity
-me | me | 15 | 019238901 | home | ho | 4
+p01 | me | 15 | 09182309 | home | ho | 1
+p02 | you | 16 | 091283019283 | your mom | ho, asdfas | 2
+p03 | black | 8 | 0901820931 | your grandma | distort | 1
