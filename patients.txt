@@ -1,4 +1,2 @@
 pid | name | age | phone | address | symptom | severity
-p01 | me | 15 | 09182309 | home | ho | 1
-p02 | you | 16 | 091283019283 | your mom | ho, asdfas | 2
-p03 | black | 8 | 0901820931 | your grandma | distort | 1
+p2 | Bob | 25 | 456 | Elm St | fever | 3

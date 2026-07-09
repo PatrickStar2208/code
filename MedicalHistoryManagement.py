@@ -18,10 +18,11 @@ class MedicalRecord:
 
 
 class MedicalHistoryManagement:
-    def __init__(self):
+    def __init__(self, filename="medical_history.txt"):
         self.head = None
         self.tail = None
         self.size = 0
+        self.filename = filename
 
     def is_empty(self):
         return self.size == 0
@@ -42,6 +43,7 @@ class MedicalHistoryManagement:
             self.tail = node
 
         self.size += 1
+        self.save(self.filename)
         return True
 
     def update_record(self, pid, new_symptom):
@@ -60,6 +62,7 @@ class MedicalHistoryManagement:
 
         last_record.value.symptom = new_symptom
         last_record.value.timestamp = datetime.now()
+        self.save(self.filename)
         return True
 
     def delete_record_by_pid(self, pid):
@@ -79,6 +82,7 @@ class MedicalHistoryManagement:
                     self.tail = current.prev
 
                 self.size -= 1
+                self.save(self.filename)
                 return True
             current = current.next
 
@@ -102,12 +106,13 @@ class MedicalHistoryManagement:
             print(current.value)
             current = current.next
 
-    def save(self, filename="medical_history.txt"):
+    def save(self, filename=None):
         """Save the current list of medical history records to a text file."""
+        target_file = filename or self.filename
         records = []
         current = self.head
         while current is not None:
             records.append(current.value)
             current = current.next
-        save_medical_history_list(records, filename)
+        save_medical_history_list(records, target_file)
 

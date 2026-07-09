@@ -26,9 +26,10 @@ class PatientDatabase:
     - MedicalHistoryManagement tracks their medical records
     """
     
-    def __init__(self):
+    def __init__(self, filename="patients.txt"):
         """Initialize an empty patient dictionary."""
         self.patients = {}  # Key: pid (string), Value: Patient object
+        self.filename = filename
 
     def register_patient(self, patient):
         """
@@ -48,6 +49,7 @@ class PatientDatabase:
             return False
 
         self.patients[patient.pid] = patient
+        self.save(self.filename)
         return True
 
     def search_patient(self, pid):
@@ -107,6 +109,7 @@ class PatientDatabase:
         if new_severity is not None:
             patient.severity = new_severity
 
+        self.save(self.filename)
         print(f"Updated: {patient}")
         return True
 
@@ -123,8 +126,10 @@ class PatientDatabase:
         Note: Medical history records remain in MedicalHistoryManagement
               Only the active patient record is removed from this database
         """
-        # Remove from dictionary and return the removed object
-        return self.patients.pop(pid, None)
+        removed = self.patients.pop(pid, None)
+        if removed is not None:
+            self.save(self.filename)
+        return removed
 
     def display_all_patients(self):
         """
@@ -141,8 +146,8 @@ class PatientDatabase:
         for patient in self.patients.values():
             print(patient)
 
-    def save(self, filename="patients.txt"):
+    def save(self, filename=None):
         """Save the current list of patients to a text file."""
-        # Convert dictionary values to a list of Patient objects
+        target_file = filename or self.filename
         patient_list = list(self.patients.values())
-        save_patient_list(patient_list, filename)
+        save_patient_list(patient_list, target_file)
