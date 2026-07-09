@@ -53,7 +53,7 @@ class MedicalHistoryManagement:
         current = self.head
         last_record = None
         while current is not None:
-            if current.value.pid == pid:
+            if current.value.medpid == pid:
                 last_record = current
             current = current.next
 
@@ -63,6 +63,23 @@ class MedicalHistoryManagement:
         last_record.value.symptom = new_symptom
         last_record.value.timestamp = datetime.now()
         self.save(self.filename)
+        return True
+
+    def add_record_by_patient(self, database, name, phone, symptom):
+        """Find a patient by name and phone, then add a new medical history record for them."""
+        if not name or not phone or not symptom:
+            return False
+
+        patient = None
+        for existing_patient in database.patients.values():
+            if existing_patient.name.lower() == name.lower() and existing_patient.phone == phone:
+                patient = existing_patient
+                break
+
+        if patient is None:
+            return False
+
+        self.add_record(patient.pid, symptom)
         return True
 
     def delete_record_by_pid(self, pid):

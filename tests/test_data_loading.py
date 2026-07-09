@@ -73,6 +73,19 @@ class DataLoadingTests(unittest.TestCase):
             self.assertEqual(len(saved_records), 1)
             self.assertEqual(saved_records[0].symptom, "cough")
 
+    def test_add_history_using_patient_name_and_phone(self):
+        database = PatientDatabase()
+        history = MedicalHistoryManagement()
+        patient = Patient(pid="p4", name="Diana", age=29, phone="555", address="Oak St", symptom="fever", severity=1)
+        database.register_patient(patient)
+
+        result = history.add_record_by_patient(database, "Diana", "555", "fatigue")
+
+        self.assertTrue(result)
+        records = history.find_records("p4")
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0].symptom, "fatigue")
+
 
 if __name__ == "__main__":
     unittest.main()

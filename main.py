@@ -209,24 +209,25 @@ def main():
             except InputCancelledError as exc:
                 print_error(str(exc))
 
-        # ========== CHOICE 9: UPDATE MEDICAL HISTORY ==========
+        # ========== CHOICE 9: ADD NEW MEDICAL RECORD ==========
         elif choice == 9:
             try:
-                print_section("🛠️ UPDATE MEDICAL HISTORY")
-                medpid = safe_input("Patient ID to update history for: ")
-                if not medpid:
-                    raise InputCancelledError("Please enter a patient ID!")
+                print_section("📝 ADD NEW MEDICAL RECORD")
+                name = safe_input("Patient name: ")
+                phone = safe_input("Patient phone: ")
+                if not name or not phone:
+                    raise InputCancelledError("Please enter patient name and phone number!")
 
                 new_symptom = input_symptoms("New symptoms (comma-separated): ")
                 if not new_symptom:
                     raise InputCancelledError("Please enter new symptoms!")
 
-                updated = history.update_record(medpid, new_symptom)
+                updated = history.add_record_by_patient(database, name, phone, new_symptom)
                 if updated:
                     persist_data(database, history)
-                    print_success("Medical history updated successfully!")
+                    print_success("New medical record added successfully!")
                 else:
-                    print_error("No medical history found for this patient.")
+                    print_error("No matching patient found.")
             except InputCancelledError as exc:
                 print_error(str(exc))
 

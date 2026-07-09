@@ -72,7 +72,7 @@ def display_menu():
         ("6", "🗑️  Delete Medical Record"),
         ("7", "📖 Display Medical History"),
         ("8", "🔍 Find Patient History"),
-        ("9", "🛠️ Update Medical History"),
+        ("9", "📝 Add New Medical Record"),
         ("10", "🚑 Process Next Patient"),
         ("11", "📥 Display Queue"),
         ("0", "🚪 Exit"),
