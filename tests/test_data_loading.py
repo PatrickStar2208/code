@@ -86,6 +86,16 @@ class DataLoadingTests(unittest.TestCase):
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0].symptom, "fatigue")
 
+    def test_search_patient_by_name_and_phone(self):
+        database = PatientDatabase()
+        patient = Patient(pid="p5", name="Evan", age=35, phone="777", address="Maple St", symptom="headache", severity=2)
+        database.register_patient(patient)
+
+        found = database.search_patient_by_name_and_phone("Evan", "777")
+
+        self.assertIsNotNone(found)
+        self.assertEqual(found.pid, "p5")
+
 
 if __name__ == "__main__":
     unittest.main()

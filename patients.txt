@@ -1,2 +1,3 @@
 pid | name | age | phone | address | symptom | severity
-p2 | Bob | 25 | 456 | Elm St | fever | 3
+p5 | Evan | 35 | 777 | Maple St | headache | 2
+p01 | me | 16 | 0000001 | home | ho | 4

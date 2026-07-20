@@ -52,20 +52,27 @@ class PatientDatabase:
         self.save(self.filename)
         return True
 
-    def search_patient(self, pid):
+    def search_patient(self, pid=None, name=None, phone=None):
         """
-        Find a patient by ID.
-        
-        Args:
-            pid (str): Patient ID to search for
-            
-        Returns:
-            Patient object if found, None otherwise
-            
-        Time Complexity: O(1) average case
+        Find a patient by ID, or fall back to name + phone.
         """
-        # Dictionary .get() returns value or None if key not found
-        return self.patients.get(pid)
+        if pid is not None:
+            return self.patients.get(pid)
+
+        if not name or not phone:
+            return None
+
+        normalized_name = name.strip().lower()
+        normalized_phone = phone.strip()
+        for patient in self.patients.values():
+            if patient.name.lower() == normalized_name and patient.phone == normalized_phone:
+                return patient
+
+        return None
+
+    def search_patient_by_name_and_phone(self, name, phone):
+        """Find a patient using name and phone number."""
+        return self.search_patient(name=name, phone=phone)
 
     def update_patient(self, pid, new_name=None, new_age=None, new_phone=None, new_address=None, new_symptom=None, new_severity=None):
         """

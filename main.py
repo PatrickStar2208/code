@@ -117,16 +117,20 @@ def main():
 
         # ========== CHOICE 2: SEARCH FOR PATIENT ==========
         elif choice == 2:
-            print_section("🔎 FIND PATIENT")
-            pid = safe_input("Patient ID to search: ")
-            if pid:
-                found = database.search_patient(pid)
+            try:
+                print_section("🔎 FIND PATIENT")
+                name = safe_input("Patient name to search: ")
+                phone = input_phone("Patient phone to search: ")
+                if not name or not phone:
+                    raise InputCancelledError("Please enter patient name and phone number!")
+
+                found = database.search_patient_by_name_and_phone(name, phone)
                 if found:
                     print(found)
                 else:
                     print_error("Patient not found.")
-            else:
-                print_error("Please enter a patient ID!")
+            except InputCancelledError as exc:
+                print_error(str(exc))
 
         # ========== CHOICE 3: UPDATE PATIENT ==========
         elif choice == 3:
@@ -202,10 +206,17 @@ def main():
         elif choice == 8:
             try:
                 print_section("🔍 FIND PATIENT HISTORY")
-                medpid = safe_input("Patient ID to search: ")
-                if not medpid:
-                    raise InputCancelledError("Please enter a patient ID!")
-                history.find_records(medpid)
+                name = safe_input("Patient name to search: ")
+                phone = input_phone("Patient phone to search: ")
+                if not name or not phone:
+                    raise InputCancelledError("Please enter patient name and phone number!")
+
+                records = history.find_records_by_patient(database, name, phone)
+                if records:
+                    for record in records:
+                        print(record)
+                else:
+                    print_error("No medical history records found.")
             except InputCancelledError as exc:
                 print_error(str(exc))
 

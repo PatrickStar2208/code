@@ -112,6 +112,13 @@ class MedicalHistoryManagement:
             current = current.next
         return records
 
+    def find_records_by_patient(self, database, name, phone):
+        """Find medical history records by patient name and phone number."""
+        patient = database.search_patient_by_name_and_phone(name, phone)
+        if patient is None:
+            return []
+        return self.find_records(patient.pid)
+
     def display_history(self):
         if self.is_empty():
             print("No medical history records.")
